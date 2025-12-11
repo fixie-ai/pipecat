@@ -405,7 +405,7 @@ class UltravoxRealtimeLLMService(LLMService):
             try:
                 if isinstance(message, bytes):
                     await self._handle_audio(message)
-                    return
+                    continue
 
                 data = json.loads(message)
                 match data.get("type"):
@@ -445,7 +445,6 @@ class UltravoxRealtimeLLMService(LLMService):
 
     async def _handle_audio(self, audio: bytes):
         """Handle incoming audio bytes from Ultravox Realtime."""
-        logger.info(f"Received {len(audio)} bytes of audio from Ultravox Realtime")
         if not audio:
             return
         if not self._bot_responding:
