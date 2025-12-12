@@ -336,14 +336,13 @@ class UltravoxRealtimeLLMService(LLMService):
         # Ultravox handles all context server-side, so the only context we may
         # need to handle here is new function call results.
         for message in reversed(context.messages):
-            if not isinstance(message, openai_chat_types.ChatCompletionToolMessageParam):
+            if message.get("role") != "tool":
                 break
+            content = message.get("content")
             socket_message = {
                 "type": "client_tool_result",
-                "invocationId": message.tool_call_id,
-                "result": message.content
-                if isinstance(message.content, str)
-                else "".join(t.text for t in message.content),
+                "invocationId": message.get("tool_call_id"),
+                "result": content if isinstance(content, str) else "".join(t.text for t in content),
             }
             await self._send(socket_message)
 

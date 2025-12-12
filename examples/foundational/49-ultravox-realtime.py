@@ -15,6 +15,8 @@ from pipecat.adapters.schemas.tools_schema import ToolsSchema
 from pipecat.pipeline.pipeline import Pipeline
 from pipecat.pipeline.runner import PipelineRunner
 from pipecat.pipeline.task import PipelineParams, PipelineTask
+from pipecat.processors.aggregators.llm_context import LLMContext
+from pipecat.processors.aggregators.llm_response_universal import LLMContextAggregatorPair
 from pipecat.runner.types import RunnerArguments
 from pipecat.runner.utils import create_transport
 from pipecat.services.llm_service import FunctionCallParams
@@ -170,11 +172,16 @@ There is also a secret menu that changes daily. If the user asks about it, use t
 
     llm.register_function("get_secret_menu", get_secret_menu)
 
+    # Necessary to complete the function call lifecycle in Pipecat.
+    context_aggregator = LLMContextAggregatorPair(LLMContext([]))
+
     # Build the pipeline
     pipeline = Pipeline(
         [
             transport.input(),
+            context_aggregator.user(),
             llm,
+            context_aggregator.assistant(),
             transport.output(),
         ]
     )
