@@ -18,7 +18,7 @@ from pipecat.pipeline.task import PipelineParams, PipelineTask
 from pipecat.runner.types import RunnerArguments
 from pipecat.runner.utils import create_transport
 from pipecat.services.llm_service import FunctionCallParams
-from pipecat.services.ultravox.llm import UltravoxRealtimeLLMService, OneShotInputParams
+from pipecat.services.ultravox.llm import OneShotInputParams, UltravoxRealtimeLLMService
 from pipecat.transports.base_transport import BaseTransport, TransportParams
 from pipecat.transports.daily.transport import DailyParams
 from pipecat.transports.websocket.fastapi import FastAPIWebsocketParams
@@ -47,6 +47,7 @@ transport_params = {
         vad_enabled=False,
     ),
 }
+
 
 async def get_secret_menu(params: FunctionCallParams):
     category = params.arguments.get("category", "both")
@@ -141,7 +142,7 @@ CARAMEL MACCHIATO $3.49
 MOCHA LATTE $3.49
 CARAMEL MOCHA LATTE $3.49
 
-There is also a secret menu that changes daily. If the user asks about it, use the getSecretMenu tool to look up today's secret menu items.
+There is also a secret menu that changes daily. If the user asks about it, use the get_secret_menu tool to look up today's secret menu items.
 """
 
     secret_menu_function = FunctionSchema(
@@ -163,19 +164,11 @@ There is also a secret menu that changes daily. If the user asks about it, use t
             system_prompt=system_prompt,
             temperature=0.3,
             max_duration=datetime.timedelta(minutes=3),
-            extra={
-                "experimentalSettings": {
-                    "backgroundAudio": {
-                        "audio": "birds",
-                        "volume": 0.01,
-                    }
-                }
-            }
         ),
         one_shot_selected_tools=ToolsSchema(standard_tools=[secret_menu_function]),
     )
 
-    llm.register_function("getSecretMenu", get_secret_menu)
+    llm.register_function("get_secret_menu", get_secret_menu)
 
     # Build the pipeline
     pipeline = Pipeline(

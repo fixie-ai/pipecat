@@ -470,6 +470,7 @@ class UltravoxRealtimeLLMService(LLMService):
                     function_name=tool_name,
                     tool_call_id=invocation_id,
                     arguments=parameters,
+                    context=None,
                 )
             ]
         )
