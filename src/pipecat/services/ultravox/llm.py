@@ -57,7 +57,6 @@ from pipecat.processors.aggregators.openai_llm_context import (
 )
 from pipecat.processors.frame_processor import FrameDirection
 from pipecat.services.llm_service import FunctionCallFromLLM, LLMService
-
 from pipecat.utils.time import time_now_iso8601
 
 try:
