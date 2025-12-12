@@ -53,7 +53,7 @@ transport_params = {
 
 async def get_secret_menu(params: FunctionCallParams):
     category = params.arguments.get("category", "both")
-    logger.info(f"Fetching secret menu with category: {category}")
+    logger.debug(f"Fetching secret menu with category: {category}")
     items = []
     if category in {"donuts", "both"}:
         items.append(
